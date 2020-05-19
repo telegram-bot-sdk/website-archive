@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'baseUrl' => 'http://jigsaw-docs-staging.tighten.co',
+    'baseUrl' => 'https://telegram-bot-sdk.netlify.app',
     'production' => false,
 
     // DocSearch credentials

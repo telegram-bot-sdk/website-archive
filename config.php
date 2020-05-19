@@ -3,10 +3,10 @@
 use Illuminate\Support\Str;
 
 return [
-    'baseUrl' => '',
+    'baseUrl' => 'https://telegram-bot-sdk.netlify.app',
     'production' => false,
-    'siteName' => 'Docs Starter Template',
-    'siteDescription' => 'Beautiful docs powered by Jigsaw',
+    'siteName' => 'Telegram Bot SDK 4.0',
+    'siteDescription' => 'Create beautiful Telegram Bots with PHP',
 
     // Algolia DocSearch credentials
     'docsearchApiKey' => '',

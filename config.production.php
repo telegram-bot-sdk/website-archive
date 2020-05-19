@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'baseUrl' => 'https://my-jigsaw-docs.com',
+    'baseUrl' => 'https://telegram-bot-sdk.netlify.app',
     'production' => true,
 
     // DocSearch credentials
