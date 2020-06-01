@@ -7,19 +7,21 @@ section: content
 
 # Setting Up Your Bot
 
-This section will explain how to setup all of your bots from `config/telegram.php` file.
+This section will explain how to setup all of your bots.
 
 Open `config/telegram.php`:
 
-## <a name="use"></a>[`use`](#use)
+## use {$use}
 
-Default bot name if there's no bot name specified on `telegram()`.
+Default bot name if there's no bot name specified while sending a request.
 
+```php
+$default = telegram()->getMe();   // Will be using default bot from "use" key value.
+
+$foo = telegram()->bot('foo')->getMe();  // Will be using 'foo' bot.
 ```
-$me = telegram()->getMe();   // Will be using default bot from "use" key value
-```
 
-## <a name="bots"></a>[`bots`](#bots)
+## bots {$bots}
 
 | Type  | Value                             |
 | ----- | --------------------------------- |
@@ -27,13 +29,13 @@ $me = telegram()->getMe();   // Will be using default bot from "use" key value
 
 `bots` key contains all of your bot configuration.
 
-As for version `v4.0` or newer, you can `listen` to events sent to your bot and set fully customizable `Event Listener` for each request sent to your bot. Learn more about [Handling Events]().
+As for version `v4.0` or newer, you can `listen` to events sent to your bot and set fully customizable `Event Listener` for each request sent to your bot.
 
-You can also assign `commands` or `commands_group` to work with your bot seamlessly. Learn more about [Commands setup]().
+You can also assign [`commands`](#commands) or [`command_groups`](#command_groups) to work with your bot seamlessly.
 
 Here's an example of bot configuration format:
 
-```
+```php
 ...
 'default' => [
   ...
@@ -47,18 +49,18 @@ Here's an example of bot configuration format:
 ...
 ```
 
-|         Key         |               Usage                |  Type  |
-| :-----------------: | :--------------------------------: | :----: |
-|      username       |     Your Telegram Bot Username     | String |
-|        token        |      Your Telegram Bot Token       | String |
-| commands (Optional) | List of [Command](#commands) class | Array  |
-|  listen (Optional)  |  List of [Event Listener]() class  | Array  |
+|         Key         |                                                        Usage                                                         |  Type  |
+| :-----------------: | :------------------------------------------------------------------------------------------------------------------: | :----: |
+|      username       |                                              Your Telegram Bot Username                                              | String |
+|        token        |                                               Your Telegram Bot Token                                                | String |
+| commands (Optional) | List of [`commands`](#commands), [`command_groups`](#command_groups), or [`command_repository`](#command_repository) | Array  |
+|  listen (Optional)  |                           List of [Event Listener](#) class                           | Array  |
 
 You can register as many bot configuration as you want, just make sure your bot name is unique for each bot config.
 
 Here's an example of multi-bot usage:
 
-```
+```php
 $myFirstBot = telegram()->bot('myFirstBot')->getMe();
 print_r($myFirstBot);
 
@@ -66,17 +68,17 @@ $mySecondBot = telegram()->bot('mySecondBot')->getMe();
 print_r($mySecondBot);
 ```
 
-## <a name="webhook"></a>[`webhook`](#webhook) (Optional)
+## webhook {#webhook}
 
 Webhook domain configuration for CLI webhook setup helper.
 
-Go to [Webhooks page]() to learn how to setup webhook for your bot.
+Go to [Webhooks section](#) to learn how to setup webhook for your bot.
 
 |  Key   |               Usage               |  Type  |
 | :----: | :-------------------------------: | :----: |
 | domain | Domain for inbound webhook update | String |
 
-## <a name="http"></a>[`http`](#http) (Optional)
+## http {#webhook}
 
 HTTP client configuration for the SDK.
 | Key | Usage | Type |
@@ -86,7 +88,7 @@ HTTP client configuration for the SDK.
 | async | To set the Base API URL. | String |
 | client | To set HTTP Client. Should be an instance of @see `\Telegram\Bot\Contracts\HttpClientInterface::class` | String |
 
-## <a name="commands"></a>[`commands`](#commands) (Optional)
+## commands {#commands}
 
 This SDK has build in command handler system. You can register commands for all of your bots at once. This array will be applied as **global command** across all of your bots and will be always active.
 
@@ -98,9 +100,9 @@ The command class should extend the `\Telegram\Bot\Commands\Command` class.
 | :------------: | :--------------------------------------------------: |
 | `command_name` | Class that extends `\Telegram\Bot\Commands\Command`. |
 
-Go to [Commands]() page see advance usage and examples.
+Go to [Commands System](/docs/command-system) page to see advanced usage and examples.
 
-## <a name="command_groups"></a>[`command_groups`](#command_groups) (Optional)
+## command_groups {#command_groups}
 
 You can organize a set of commands into groups which can later be re-used across all of your bots.
 
@@ -108,20 +110,20 @@ You can create 4 types of `command_groups`:
 
 1. Using full path to command classes.
 
-```
+```php
 "foo" => \Bot\Commands\Foo::class
 ```
 
-2. Group using command respository name (see [command_repository](#command_repository) section below).
+2. Group using command respository name (see [`command_repository`](#command_repository) section below).
 
-```
+```php
 "fooGroup" => "foo"
 ```
 
 3. Using other `command_groups` name
    For example, take a look at `all` group:
 
-```
+```php
 "command_groups" => [
     "foo" => [
         "foo" => \Bot\Commands\Foo::class,
@@ -136,7 +138,7 @@ You can create 4 types of `command_groups`:
 
 4. Using combination of 1, 2 and 3 all together in one group.
 
-## <a name="command_repository"></a>[`command_repository`](#command_repository) (Optional)
+## command_repository {#command_repository}
 
 Command Repository lets you register commands that can be shared between one or more bots across the project.
 
@@ -146,7 +148,7 @@ Command Repository are not active by default, you need to use the key name to re
 
 Think of this as a central storage, to register, reuse and maintain them across all bots.
 
-```
+```php
 "command_repository" => [
   "foo" => \Bot\Commands\Foo::class,
   "bar" => \Bot\Commands\Bar::class,

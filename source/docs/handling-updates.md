@@ -1,10 +1,16 @@
 ---
 title: handling-updates
-description: 
+description:
 extends: _layouts.documentation
 section: content
 ---
 
-# handling-updates {#handling-updates}
+# Handling Updates {#handling-updates}
 
-handling-updates
+Handling Events
+
+## Long Polling
+
+## Webhook
+
+## Event Listener <a name="event-listener"></a>
