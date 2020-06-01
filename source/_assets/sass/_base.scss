@@ -1,5 +1,6 @@
 body {
     font-size: 17px;
+    scroll-behavior: smooth;
 }
 
 a {
@@ -28,7 +29,6 @@ code {
     @apply .px-2;
     @apply .py-px;
     @apply .rounded;
-    @apply .text-sm;
 }
 
 code.hljs {
