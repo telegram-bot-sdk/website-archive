@@ -12,7 +12,7 @@ Telegram Bot SDK is a robust library to integrate Telegram Bot to your project w
 ## Requirements
 - PHP >= 7.4
 - [Composer](https://getcomposer.org/)
-- Telegram Bot API Access Token - Talk to [@BotFather](https://core.telegram.org/bots#botfather) and generate one.
+- Telegram Bot Token - Talk to [@BotFather](https://core.telegram.org/bots#botfather) and generate one.
 
 ## 1. Installation
 
@@ -27,8 +27,8 @@ We also highly recommend you to start with [Standalone Starter Template](https:/
 ```
 $ composer create-project telegram-bot-sdk/standalone-starter mybot
 ```
-#### Project Structure
 
+#### Project Structure
 ```
 .
 ├── .env - Project environment variable.
@@ -48,14 +48,14 @@ $ composer create-project telegram-bot-sdk/standalone-starter mybot
 ```
 
 ## 2. Configuration
-Copy your `bot_token` received from @BotFather an paste it to `.env` file:
+Copy your `bot_token` received from @BotFather and paste it to `.env` file:
 ```
 TELEGRAM_BOT_TOKEN="Your Bot token here"
 ...
 ```
 
 ## 3. Making a request
-Making a request using the SDK is pretty straightforward. Try run `$ php public/index.php`, you should have your bot information printed in your console:
+Making a request using the SDK is pretty straightforward. Try open `public/index.php` file from your browser, you should have your bot information printed on your screen:
 ```
 <?php
 
@@ -67,10 +67,7 @@ print_r($defaultBot);      // Print out bot information
 
 ...
 ```
-
-
 Pretty simple right? Here's other example of sending a message to other telegram user by `chat_id`:
-
 ```
 $message = telegram()->sendMessage([
   'chat_id' => 'recipient_chat_id',
