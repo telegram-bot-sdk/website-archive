@@ -7,9 +7,8 @@ return [
         'url' => 'docs/usage',
         'children' => [
             'Setting up your bot' => 'docs/setting-up-your-bot',
-            'Making Request' => 'docs/making-request',
-            'Getting Updates' => 'docs/getting-updates',
-            'Handling Updates via Webhook' => 'docs/handling-updates',
+            'Sending Request' => 'docs/sending-request',
+            'Handling Updates' => 'docs/handling-updates',
             'Command System' => 'docs/command-system',
             'Keyboards' => 'docs/keyboards',
             'Inline mode' => 'docs/inline-mode',
