@@ -44,7 +44,7 @@ We highly recommend to use Webhook if you need your bot to process Updates in re
 
 > **Important:** In order to setup webhooks, your domain has to be secured with SSL certificate (HTTPS).
 >
-> If you don't have any HTTPS domain yet, we have prepared additional guide on [Setting up temporary SSL secured domain using ngrok]() to test your webhook locally from your machine.
+> If you don't have any HTTPS domain yet, we have prepared additional guide on [Setting up temporary SSL secured domain using ngrok](#) to test your webhook locally from your machine.
 
 Open `.env` file and fill your bot token and domain:
 
@@ -53,7 +53,7 @@ TELEGRAM_BOT_TOKEN        = "Your bot token here"       // Your bot token
 TELEGRAM_WEBHOOK_DOMAIN   = "https://www.example.com"   // Your secured domain
 ```
 
-Our [standalone-starter]() comes with handy CLI command to help you setup your webhook.
+Our [standalone-starter](https://github.com/telegram-bot-sdk/standalone-starter) project comes with handy CLI command to help you setup your webhook.
 
 Simply run on your console:
 
@@ -67,13 +67,13 @@ You will have `Webhook setup successful!` printed on success.
 
 After setting up get updates using either long-polling or webhooks, we can process all incoming updates using Event Listener.
 
-Event Listener will help you fully customize how update should be handled/processed by it's type.
+Event Listener will help you fully customize how update should be handled or processed by it's type (either it's a photo, inline query, or something type of Update).
 
 ---
 
-For example, create a new Event Listener to listen to message.
+For the example, we will create a new Event Listener to handle every message sent to our bot.
 
-Create a new file named `ProcessInbountMessage.php` to `bot/Listeners/` folder:
+Create a new file named `ProcessInboundMessage.php` to `bot/Listeners/` folder. You may also place it to other directory as you wish:
 
 ```php
 <?php
@@ -105,11 +105,15 @@ class ProcessInboundMessage
             'chat_id' => $update->getMessage()->chat->id,
             'text'    => $text,
         ]);
+
+        // Or you can do many other operations further down here
     }
 }
 ```
 
-Then open `config/telegram.php` file and register our newly created `ProcessInbountMessage` class:
+Open `config/telegram.php` file and take a look at `listen` key inside your bot configuration. Here, we will setup our Event Listener.
+
+Let's register our newly created `ProcessInboundMessage` class into `listen` key:
 
 ```php
 'bots' => [
@@ -127,8 +131,31 @@ Then open `config/telegram.php` file and register our newly created `ProcessInbo
 ],
 ```
 
-That's it! Now your bot should be replying to every message it's received. You can add more than one Event Listener to handle updates on one event, or other various events.
+That's it! Now your bot should be replying to every Update with `message` type!
 
-Here's list of other events that could be handled by the SDK:
+You can create other various Event Listener for other type of Updates such as photos, inline queries, etc. by breaking down JSON Serialized Update sent from Telegram Server.
 
-> **Table of contents here**
+---
+
+Here's other example how to make a photo listener. But before all of that, we need to determine what object type to be set for handling photo messages.
+
+If you break down an JSON Serialized Update that contains photo, you will have this kind of structure:
+
+```php
+├── update_id
+├── message     // Message object
+  ├── id
+  ├── from
+  ├── chat
+  ├── date
+  └── photo     // The message contains a photo object!
+```
+
+We can set `message.photo` key as our listener key which basically means _"Every **`message`** that contains **`photo`** should be listened by this class."_:
+
+```php
+'listen' => [
+    "message.photo" => YourCustomPhotoListener::class,
+],
+```
+This SDK is build with flexibility and ease of use in mind. You can check the structure of JSON Serialized Object Update sent from Telegram and determine your own listener key. The SDK will smartly classify received updates based on it's structure and trigger it if there's an Event Listener class being set.
