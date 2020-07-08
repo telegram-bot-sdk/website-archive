@@ -7,21 +7,21 @@ section: content
 
 # Setting Up Your Bot
 
-This section will explain how to setup all of your bots.
+This section will explain all available configurations and setup them for all of your bots.
 
-Open `config/telegram.php`:
+Open `telegram.php` configuration file:
 
-## use {$use}
+## use
 
 Default bot name if there's no bot name specified while sending a request.
 
 ```php
-$default = telegram()->getMe();   // Will be using default bot from "use" key value.
+$default = $telegram->getMe();   // Will be using default bot from "use" key value.
 
-$foo = telegram()->bot('foo')->getMe();  // Will be using 'foo' bot.
+$foo = $telegram->bot('foo')->getMe();  // Will be using 'foo' bot.
 ```
 
-## bots {$bots}
+## bots
 
 | Type  | Value                             |
 | ----- | --------------------------------- |
@@ -61,10 +61,10 @@ You can register as many bot configuration as you want, just make sure your bot 
 Here's an example of multi-bot usage:
 
 ```php
-$myFirstBot = telegram()->bot('myFirstBot')->getMe();
+$myFirstBot = $telegram->bot('myFirstBot')->getMe();
 print_r($myFirstBot);
 
-$mySecondBot = telegram()->bot('mySecondBot')->getMe();
+$mySecondBot = $telegram->bot('mySecondBot')->getMe();
 print_r($mySecondBot);
 ```
 
