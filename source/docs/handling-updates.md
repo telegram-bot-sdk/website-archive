@@ -16,6 +16,11 @@ This page will focus on two fundamentals on how to handle Updates within the SDK
 1. Getting the Updates.
 2. Handling the Updates using [Event Listener](#event-listener).
 
+> **Note**: We highly recommend you to take a look or use one of the starter projects to understand the structure and implementation example.
+>
+> - [Standalone project starter template](https://github.com/telegram-bot-sdk/standalone-starter)
+> - [Laravel project starter template](https://github.com/telegram-bot-sdk/laravel-starter)
+
 ## Getting Updates {#getting-updates}
 
 There are two mutually exclusive ways of receiving updates for your bot — **Long-polling** method and **Webhooks**.
@@ -46,14 +51,14 @@ We highly recommend to use Webhook if you need your bot to process Updates in re
 >
 > If you don't have any HTTPS domain yet, we have prepared additional guide on [Setting up temporary SSL secured domain using ngrok](#) to test your webhook locally from your machine.
 
+If you're using [standalone-starter](https://github.com/telegram-bot-sdk/standalone-starter) project template, it comes with handy CLI command to help you setup your webhook.
+
 Open `.env` file and fill your bot token and domain:
 
 ```env
 TELEGRAM_BOT_TOKEN        = "Your bot token here"       // Your bot token
 TELEGRAM_WEBHOOK_DOMAIN   = "https://www.example.com"   // Your secured domain
 ```
-
-Our [standalone-starter](https://github.com/telegram-bot-sdk/standalone-starter) project comes with handy CLI command to help you setup your webhook.
 
 Simply run on your console:
 
@@ -111,7 +116,7 @@ class ProcessInboundMessage
 }
 ```
 
-Open `config/telegram.php` file and take a look at `listen` key inside your bot configuration. Here, we will setup our Event Listener.
+Open your `telegram.php` config file and take a look at `listen` key inside your bot configuration. Here, we will setup our Event Listener.
 
 Let's register our newly created `ProcessInboundMessage` class into `listen` key:
 
@@ -123,7 +128,7 @@ Let's register our newly created `ProcessInboundMessage` class into `listen` key
           // Example of various events fired.
           'update'        => [],
           'message'       => [
-            Bot\Listeners\ProcessInboundMessage::class,   // Our new listener
+              Bot\Listeners\ProcessInboundMessage::class,   // Our new listener
           ],
       ],
       ...
@@ -158,4 +163,5 @@ We can set `message.photo` key as our listener key which basically means _"Every
     "message.photo" => YourCustomPhotoListener::class,
 ],
 ```
+
 This SDK is build with flexibility and ease of use in mind. You can check the structure of JSON Serialized Object Update sent from Telegram and determine your own listener key. The SDK will smartly classify received updates based on it's structure and trigger it if there's an Event Listener class being set.
