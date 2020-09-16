@@ -10,92 +10,79 @@ section: content
 Telegram Bot SDK is a robust library to integrate Telegram Bot to your project without the hassle!
 
 ## Requirements
+
 - PHP >= 7.4
 - [Composer](https://getcomposer.org/)
-- Telegram Bot Token - Talk to [@BotFather](https://core.telegram.org/bots#botfather) and generate one.
+- Telegram Bot Token - If you haven't got one, head to official [@BotFather](https://core.telegram.org/bots#botfather) docs on how to generate one.
 
 ## 1. Installation
 
-> For usage with Laravel Framework, head over to [Laravel Guide]() page.
+> We've created starter projects to help you get started. If you're new and don't have an existing project, the starter projects will help you to get started and provide you with the basic idea of how the SDK works.
+>
+> - For Standalone PHP project: [Standalone Starter](https://github.com/telegram-bot-sdk/standalone-starter)
+> - For usage with Laravel Framework: [Laravel Starter](https://github.com/telegram-bot-sdk/laravel-starter)
 
 The recommended way to install the SDK is with [Composer](http://getcomposer.org/). Composer is a dependency management tool for PHP that allows you to declare the dependencies your project needs and installs them into your project. If you don't have Composer installed on your machine, you can check [download guide](https://getcomposer.org/download/) at Composer's official website.
 
-<!-- If you are building with fresh project, we highly recommend you to download [Starter Template](https://github.com/telegram-bot-sdk/standalone-starter). To clone and install the Starter Template, simply run from you command line: -->
+Navigate to your project directory and install `telegram-bot-sdk/telegram-bot-sdk` via composer
 
-We also highly recommend you to start with [Standalone Starter Template](https://github.com/telegram-bot-sdk/standalone-starter) to begin the process. To install it to your machine simply run:
-
-```
-$ composer create-project telegram-bot-sdk/standalone-starter mybot
+```bash
+$ composer require telegram-bot-sdk/telegram-bot-sdk
 ```
 
-#### Project Structure
+Your project structure should look like this:
+
 ```
-.
-├── .env - Project environment variable.
-├── bootstrap - Bot bootstrapping files.
-├── bot - Your bot main files.
-│   ├── Commands - Bot commands.
-│   ├── Console - CLI console commands.
-│   ├── Facades - Bot Facades.
-│   ├── Http - Bot controllers.
-│   └── Listeners - Event Listeners.
-├── config - Config files.
-|   └── telegram.php - Your main SDK configuration.
-└── public - Public facing files.
-    └── index.php - Project index file.
-    └── pooling.php - Long-pooling update handler.
-    └── webhook.php - Webhook update handler.
+├── composer.json
+├── composer.lock
+└── vendor
 ```
 
-## 2. Configuration
-Copy your `bot_token` received from @BotFather and paste it to `.env` file:
-```
-TELEGRAM_BOT_TOKEN="Your Bot token here"
-...
-```
+## 2. Bot Initiation
 
-## 3. Making a request
-Making a request using the SDK is pretty straightforward. Try open `public/index.php` file from your browser, you should have your bot information printed on your screen:
-```
+Create a new file called `index.php` and paste code below:
+
+```php
 <?php
 
-require dirname(__DIR__).'/bootstrap.php';
+require './vendor/autoload.php';
 
-// Default bot
-$defaultBot = telegram()->getMe();
-print_r($defaultBot);      // Print out bot information
+use Telegram\Bot\Api as TelegramBot;
 
-...
+$telegram = new TelegramBot('YOUR_BOT_TOKEN');
 ```
-Pretty simple right? Here's other example of sending a message to other telegram user by `chat_id`:
+
+So, what we've just done was initiating new `TelegramBot` using our bot token.
+
+## 3. Sending requests
+
+Sending a request using the SDK is pretty straightforward. Let's try retrieving your bot info using new `$telegram` instance we've just created above:
+
+```php
+
+
+$botInfo = $telegram->getMe();
+print_r($botInfo);      // Print out your bot information
+
+// Do other stuff with your bot...
 ```
-$message = telegram()->sendMessage([
+
+Pretty simple right? Here's another example to send a message to telegram user by `chat_id`:
+
+```php
+$message = $telegram->sendMessage([
   'chat_id' => 'recipient_chat_id',
   'text' => 'Hello world!',
 ]);
 
-...
-```
-
-You can do other amazing things including handling updates, sending stickers, etc! Go to [API Reference]() page to see all available methods.
-
-## 4. Handling updates
-
-> **What are Updates?**
-> 
-> Every interaction user made with your bot will be called as Update. Every Update will be formatted as JSON-serialized objects.
-
-There are two mutually exclusive ways of handling updates for your bot — by long-polling and Webhooks.
-Incoming updates are stored on the server until the bot receives them either way, but they will not be kept longer than 24 hours.
-
-#### Long Polling
-Long polling is a way to process Update from Telegram server that doesn't need immediate response. Long polling technique won't be available if there's already webhook setup on the bot.
-
-You can modify and run `public/polling.php` to start proccessing updates:
+print_r($message);  // Print out successfully sent message
 
 ```
-$ php public/polling.php
-```
 
-#### Webhook
-Go to [Webhooks guide]() if you want to your bot to be responsive and handling updates in real-time.
+You can do other amazing things, including handling updates, sending stickers, etc.! Go to [API Reference]() page to see all available methods.
+
+## 4. Next Steps
+
+Other crucial parts are [responding to user interactions]() which we refer to as Telegram `Updates`. Incoming updates may contain different types such as texts, stickers, photos or videos, even locations. We also can set up our bot to handle the specific kind of Update and process them differently using Event Listeners.
+
+You can also have multi bot support in case you need more than one bot registered in one project. Head over to [Multi Bot Support]() guide for more details.

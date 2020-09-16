@@ -16,7 +16,7 @@ This page will focus on two fundamentals on how to handle Updates within the SDK
 1. Getting the Updates.
 2. Handling the Updates using [Event Listener](#event-listener).
 
-> **Note**: We highly recommend you to take a look or use one of the starter projects to understand the structure and implementation example.
+> **Note**: We highly recommend you to take a look or use one of the starter projects to understand the basic idea and implementation of the SDK.
 >
 > - [Standalone project starter template](https://github.com/telegram-bot-sdk/standalone-starter)
 > - [Laravel project starter template](https://github.com/telegram-bot-sdk/laravel-starter)
@@ -29,7 +29,7 @@ All incoming updates are stored on Telegram's server until the bot receives them
 
 ### Long Polling {#long-polling}
 
-By default, all updates will be stored on Telegram's server until it get processed or expired. By `listen()` method, we fetch unprocessed Updates from Telegram server and mark them as processed along the way.
+By default, all updates will be stored on Telegram's server until it gets processed or expired. By `listen()` method, we fetch unprocessed Updates from Telegram server and mark them as processed along the way.
 
 > **Note**: Long polling won't be available if there's Webhook installed on your bot.
 
@@ -45,45 +45,47 @@ All updates processed through `listen()` also will be handled via [Event Listene
 
 ### Webhooks {#webhooks}
 
-We highly recommend to use Webhook if you need your bot to process Updates in real time.
+Processing updates via Webhook is highly recommended if you need your bot to respond in real-time. Update of every interaction made with your bot will be sent as `HTTP POST` to webhook URL registered to Telegram's server.
 
-> **Important:** In order to setup webhooks, your domain has to be secured with SSL certificate (HTTPS).
+> **Important:** In order to set up webhooks, your domain has to be secured with SSL certificate (HTTPS).
 >
-> If you don't have any HTTPS domain yet, we have prepared additional guide on [Setting up temporary SSL secured domain using ngrok](#) to test your webhook locally from your machine.
+> If you don't have a HTTPS domain yet, we have prepared an additional guide on [Setting up temporary SSL secured domain using ngrok](#) to test your webhook locally from your machine.
 
-If you're using [standalone-starter](https://github.com/telegram-bot-sdk/standalone-starter) project template, it comes with handy CLI command to help you setup your webhook.
+> **Note:** If you're using one of the starter templates, we've covered how to configure Webhooks. The template also provides additional security features such as token validation and more out of the box.
 
-Open `.env` file and fill your bot token and domain:
+Let's get started by registering your bot's webhook URL to Telegram server. You may also refer to instructions as mentioned in [setWebhook official documentation](https://core.telegram.org/bots/api#setwebhook) for this step.
 
-```env
-TELEGRAM_BOT_TOKEN        = "Your bot token here"       // Your bot token
-TELEGRAM_WEBHOOK_DOMAIN   = "https://www.example.com"   // Your secured domain
+Open up your browser or HTTP Client and send a request to:
+
+```http
+https://api.telegram.org/bot<your_bot_token>/setWebhook?url=<your_secured_webhook_url>
 ```
 
-Simply run on your console:
+You will receive `HTTP 200 Success` status on return. After that, you can listen process any updates directly from your class or function by adding this:
 
-```bash
-$ php telegram setup:webhook
+```php
+$update = $telegram->listen(true);
+
+// Do something with the update object or let the event listener handle it.
+// ...
 ```
-
-You will have `Webhook setup successful!` printed on success.
 
 ## Event Listener {#event-listener}
 
-After setting up get updates using either long-polling or webhooks, we can process all incoming updates using Event Listener.
+After setting up get updates using either long-polling or webhooks, you may process incoming updates using Event Listener.
 
-Event Listener will help you fully customize how update should be handled or processed by it's type (either it's a photo, inline query, or something type of Update).
+Event Listener will help you fully customize how Update should be handled or processed by its type (either it's a photo, inline query, or other types of `Update`).
 
 ---
 
-For the example, we will create a new Event Listener to handle every message sent to our bot.
+For example, we will create a new Event Listener to handle every message sent to our bot.
 
-Create a new file named `ProcessInboundMessage.php` to `bot/Listeners/` folder. You may also place it to other directory as you wish:
+Create a new file named `ProcessInboundMessage.php` to your working project directory:
 
 ```php
 <?php
 
-namespace Bot\Listeners;
+namespace Bot\Listeners; // You may modify namespace according to your project directory
 
 use Telegram\Bot\Events\UpdateEvent;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -116,35 +118,23 @@ class ProcessInboundMessage
 }
 ```
 
-Open your `telegram.php` config file and take a look at `listen` key inside your bot configuration. Here, we will setup our Event Listener.
-
-Let's register our newly created `ProcessInboundMessage` class into `listen` key:
-
 ```php
-'bots' => [
-  'default' => [
-      ...
-      'listen' => [
-          // Example of various events fired.
-          'update'        => [],
-          'message'       => [
-              Bot\Listeners\ProcessInboundMessage::class,   // Our new listener
-          ],
-      ],
-      ...
-  ],
-],
+<?php
+
+...
+
+$update = $telegram->listen(true);
+$telegram->on('message', ProcessInboundMessage::handle($update));
+
+// Or you can listen to another message type.
+// Here's an example to process every message that contains one or more photos
+$telegram->on('message.photo', ProcessInboundPhoto::handle($update));
+
 ```
-
-That's it! Now your bot should be replying to every Update with `message` type!
-
-You can create other various Event Listener for other type of Updates such as photos, inline queries, etc. by breaking down JSON Serialized Update sent from Telegram Server.
 
 ---
 
-Here's other example how to make a photo listener. But before all of that, we need to determine what object type to be set for handling photo messages.
-
-If you break down an JSON Serialized Update that contains photo, you will have this kind of structure:
+Here's another example for Event Listener to process incoming Update that contains a photo. Let's take a look at how the SDK break down object type of the incoming Update. In this case, we can assume incoming Update will contain a photo and will have this structure:
 
 ```php
 ├── update_id
@@ -153,15 +143,20 @@ If you break down an JSON Serialized Update that contains photo, you will have t
   ├── from
   ├── chat
   ├── date
-  └── photo     // The message contains a photo object!
+  └── photo     // The message includes a photo object!
 ```
 
-We can set `message.photo` key as our listener key which basically means _"Every **`message`** that contains **`photo`** should be listened by this class."_:
+We can set `message.photo` as our listener key which basically means _"Every **`message`** that contains **`photo`** should be processed by this class."_
 
 ```php
-'listen' => [
-    "message.photo" => YourCustomPhotoListener::class,
-],
+<?php
+
+...
+
+$update = $telegram->listen(true);
+
+$telegram->on('message.photo', ProcessInboundPhoto::handle($update));
+
 ```
 
-This SDK is build with flexibility and ease of use in mind. You can check the structure of JSON Serialized Object Update sent from Telegram and determine your own listener key. The SDK will smartly classify received updates based on it's structure and trigger it if there's an Event Listener class being set.
+This SDK is built with flexibility and ease of use in mind. You can check the structure of JSON Serialized Object Update sent from Telegram and determine your own listener key. The SDK will smartly classify received updates based on its structure and trigger it if there's an Event Listener class being set.
