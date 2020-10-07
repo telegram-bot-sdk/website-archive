@@ -80,12 +80,12 @@ So, since `v3` we've introduced multi-bot support for the SDK. We can add as man
 ]
 ```
 
-|   Key    |                                                        Usage                                                         |  Type  | Required |
-| :------: | :------------------------------------------------------------------------------------------------------------------: | :----: | :------: |
-|  token   |                                               Your Telegram Bot Token                                                | String |    ✅    |
-| username |                                              Your Telegram Bot Username                                              | String |          |
-| commands | List of [`commands`](#commands), [`command_groups`](#command_groups), or [`command_repository`](#command_repository) | Array  |          |
-|  listen  |                                          List of [Event Listener](#) class                                           | Array  |          |
+|   Key    |                                                          Usage                                                          |  Type  | Required |
+| :------: | :---------------------------------------------------------------------------------------------------------------------: | :----: | :------: |
+|  token   |                                                 Your Telegram Bot Token                                                 | String |    ✅    |
+| username |                                               Your Telegram Bot Username                                                | String |          |
+| commands | List of `TelegramCommand::class()`, [`command_groups`](#command_groups), or [`command_repository`](#command_repository) | Array  |          |
+|  listen  |                                            List of [Event Listener](#) class                                            | Array  |          |
 
 ## Setting your default bot
 
@@ -197,7 +197,7 @@ All of command class should extend the `\Telegram\Bot\Commands\Command` class.
 ]
 ```
 
-### command_groups
+### command_groups {#command_groups}
 
 You can organize a set of commands into groups that can later be reused across your bots.
 
